@@ -2,6 +2,7 @@ import { GAS_URL } from './firebase-config.js';
 
 // グローバル
 let chars = [];                 // 全キャラ情報
+let charMap = new Map(); // id→キャラ情報 のマップ
 let rankings = [];             // 最終順位の ID リスト
 let round = 0;                 // ラウンドカウンタ
 let currentPool = [];  // 残り未処理キャラプール
@@ -17,7 +18,10 @@ const losses = new Map();
 function init() {
   return fetch('characters.json')
     .then(r => r.json())
-    .then(data => { chars = data; });
+    .then(data => {
+      chars = data;
+      charMap = new Map(chars.map(c => [c.id, c]));
+    });
 }
 
 /** ソート開始 */
@@ -31,28 +35,32 @@ function startSorting() {
 
 /** 次ラウンド: currentPool から 2～3 人ずつ取り出し表示 */
 function nextRound() {
+　round++;
   if (rankings.length === chars.length) return finish();
   if (currentPool.length === 1) {
     // そのまま確定
     rankings.push(currentPool[0]);
     currentPool = getLosersOf(currentPool[0]);
+    return nextRound();
   } else {
+  	nextPool = [];
   	nextGroup();
-  	if (nextPool.length !== 0) currentPool = nextPool.slice();
   }
-  nextPool = [];
-  round++;
-  return nextRound();
 }
 
 function nextGroup() {
   const poolSize = currentPool.length;
-  if (poolSize === 0) return; // nextRoundに返す
+  if (poolSize === 0) return afterRound();
   else if (poolSize < 3) groupSize = poolSize;
   else if (poolSize % 3 === 1) groupSize = 2;
   else groupSize = 3;
   currentGroup = currentPool.splice(0, groupSize);
   renderGroup(currentGroup);
+}
+
+function afterRound() {
+  currentPool = nextPool.slice();
+  return nextRound();
 }
 
 /** グループ表示 */
@@ -61,7 +69,7 @@ function renderGroup(group) {
   const area = document.getElementById('sort-area');
   area.innerHTML = '';
   group.forEach(id => {
-    const info = chars.find(c => c.id === id);
+    const info = charMap.get(id);
     const div = document.createElement('div');
     div.className = 'char-card'; div.dataset.id = id;
     div.innerHTML = `<img src='${info.img}' alt='${info.name}' onerror="this.parentNode.classList.add('placeholder')"><p>${info.name}</p>`;
@@ -123,12 +131,24 @@ function getLosersOf(id) {
 }
 
 /** 完了処理: GAS送信→結果画面へ */
-function finish() {
+async function finish() {
   const datetime = Date.now();
-  const playTime = Math.floor((Date.now()-startTime)/1000);
-  const hex = rankings.map(id=>chars.find(c=>c.id===id).hex).join('');
-  fetch(GAS_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({datetime,playTime,resultHex:hex}) });
-  location.href = `result.html?result=${hex}`;
+  const playTime = Math.floor((Date.now() - startTime) / 1000);
+  const hex = rankings
+    .map(id => charMap.get(id).hex)
+    .join('');
+  try {
+    await fetch(GAS_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ datetime, playTime, resultHex: hex })
+    });
+  } catch (e) {
+    console.error('Failure to send data', e);
+    // 今後必要に応じて処理を追加
+  } finally {
+    location.href = `result.html?result=${hex}`;
+  }
 }
 
 /** 結果画面レンダー */
