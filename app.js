@@ -153,7 +153,7 @@ async function finish() {
         await fetch(GAS_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ datetime, playTime, resultHex: hex })
+        body: JSON.stringify({playTime, resultHex: hex })
         });
     } catch (e) {
         console.error('Failure to send data', e);
