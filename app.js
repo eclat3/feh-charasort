@@ -4,7 +4,8 @@ import { GAS_URL } from './firebase-config.js';
 let chars = [];                 // 全キャラ情報
 let rankings = [];             // 最終順位の ID リスト
 let round = 0;                 // ラウンドカウンタ
-let currentPool = [];          // 今回比較対象 ID の配列
+let currentPool = [];  // 残り未処理キャラプール
+let currentGroup = []; // 今回比較するグループID配列          // 今回比較対象 ID の配列
 let startTime;
 
 // 敗北情報: map<charId, Set<opponentId>>
