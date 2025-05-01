@@ -38,7 +38,7 @@ function nextRound() {
     currentPool = getLosersOf(currentPool[0]);
   } else {
   	nextGroup();
-  	currentPool = nextPool.slice();
+  	if (nextPool.length !== 0) currentPool = nextPool.slice();
   }
   nextPool = [];
   round++;
