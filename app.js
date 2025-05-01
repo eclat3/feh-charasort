@@ -128,9 +128,7 @@ function finish() {
   const playTime = Math.floor((Date.now()-startTime)/1000);
   const hex = rankings.map(id=>chars.find(c=>c.id===id).hex).join('');
   fetch(GAS_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({datetime,playTime,resultHex:hex}) });
-	.finally(() => {
-	  location.href = `result.html?result=${hex}`;
-	});
+  location.href = `result.html?result=${hex}`;
 }
 
 /** 結果画面レンダー */
