@@ -5,7 +5,9 @@ let chars = [];                 // 全キャラ情報
 let rankings = [];             // 最終順位の ID リスト
 let round = 0;                 // ラウンドカウンタ
 let currentPool = [];  // 残り未処理キャラプール
-let currentGroup = []; // 今回比較するグループID配列          // 今回比較対象 ID の配列
+let nextPool = []; // 次回の比較に用いるプール
+let currentGroup = []; // 今回比較するグループID配列
+let groupSize = 3; // currentGroup.length
 let startTime;
 
 // 敗北情報: map<charId, Set<opponentId>>
@@ -29,21 +31,28 @@ function startSorting() {
 
 /** 次ラウンド: currentPool から 2～3 人ずつ取り出し表示 */
 function nextRound() {
-  // N=人数
-  const N = currentPool.length;
-  if (N === 1) {
+  if (rankings.length === chars.length) return finish();
+  if (currentPool.length === 1) {
     // そのまま確定
     rankings.push(currentPool[0]);
     currentPool = getLosersOf(currentPool[0]);
-    round++;
-    return nextRound();
+  } else {
+  	nextGroup();
+  	currentPool = nextPool.slice();
   }
-  // 決定戦: 2 or 3 人グループ
-  let groupSize;
-  if (N % 3 === 1) groupSize = 2;
+  nextPool = [];
+  round++;
+  return nextRound();
+}
+
+function nextGroup() {
+  const poolSize = currentPool.length;
+  if (poolSize === 0) return; // nextRoundに返す
+  else if (poolSize < 3) groupSize = poolSize;
+  else if (poolSize % 3 === 1) groupSize = 2;
   else groupSize = 3;
-  const group = currentPool.splice(0, groupSize);
-  renderGroup(group);
+  currentGroup = currentPool.splice(0, groupSize);
+  renderGroup(currentGroup);
 }
 
 /** グループ表示 */
@@ -62,11 +71,11 @@ function renderGroup(group) {
 }
 
 /** ランク選択 */
-function selectRank(el, poolSize) {
+function selectRank(el, size) {
   const s1 = document.querySelector('.selected1');
   const s2 = document.querySelector('.selected2');
   if (!s1) return el.classList.add('selected1');
-  if (poolSize === 3 && !s2 && el !== s1) return el.classList.add('selected2');
+  if (size === 3 && !s2 && el !== s1) return el.classList.add('selected2');
   // クリックで解除
   if (el.classList.contains('selected2')) el.classList.remove('selected2');
   else if (el.classList.contains('selected1')) el.classList.remove('selected1');
@@ -82,59 +91,46 @@ function clearSelection() {
 function submitRank() {
   const s1 = document.querySelector('.selected1');
   if (!s1) return alert('まず1位を選択');
+  if (groupSize === 3) {
+  	  const s2 = document.querySelector('.selected2');
+  	  if (!s2) return alert('2位を選択');
+  }
   const id1 = +s1.dataset.id;
-  recordLosses(currentPool, id1);
-  rankings.push(id1);
-  if (currentPool.length === 3) {
-    const s2 = document.querySelector('.selected2');
-    if (!s2) return alert('2位を選択');
+  recordLosses(currentGroup, id1); // 2位と3位の負けた相手に1位のIDをセット
+  nextPool.push(id1);
+  if (groupSize === 3) {
     const id2 = +s2.dataset.id;
-    recordLosses(currentPool.filter(id=>id!==id1), id2);
-    rankings.push(id2);
-    // 残り 3 位以下はプールに残す
-    currentPool = currentPool.filter(id=>id!==id1&&id!==id2);
-  } else {
-    // 2 人グループなら残り 1 人を敗者として記録
-    const loser = currentPool.find(id=>id!==id1);
-    recordLosses([loser], id1);
-    // 残りは losers for next
-    currentPool = [loser];
+    recordLosses(currentGroup.filter(id=>id!==id1), id2); // 3位の負けた相手を2位のIDで上書きセット
   }
-  // 次ラウンド pool を再設定
-  if (currentPool.length === 0) {
-    // 今回全員順位つけ終わり: 次に敗者集合で再度同様に
-    currentPool = Array.from(losses.keys()).filter(id => !rankings.includes(id));
-    round++;
-  }
-  // 最終判定
-  if (rankings.length === chars.length) return finish();
-  nextRound();
+  nextGroup();
 }
 
 /** 負け情報記録 */
-function recordLosses(losers, winner) {
-  losers.forEach(loser => {
-    if (loser === winner) return;
-    if (!losses.has(loser)) losses.set(loser, new Set());
-    losses.get(loser).add(winner);
+function recordLosses(losers, winnerId) {
+  losers.forEach(loserId => {
+    if (loserId === winnerId) return;
+    losses.set(loserId, winnerId);
   });
 }
 
 /** 特定キャラに負けた集合 */
 function getLosersOf(id) {
   const arr = [];
-  losses.forEach((set, loserId) => {
-    if (set.has(id)) arr.push(loserId);
+  losses.forEach((winnerId, loserId) => {
+    if (winnerId === id) arr.push(loserId);
   });
   return arr;
 }
 
 /** 完了処理: GAS送信→結果画面へ */
 function finish() {
+  const datetime = Date.now();
   const playTime = Math.floor((Date.now()-startTime)/1000);
   const hex = rankings.map(id=>chars.find(c=>c.id===id).hex).join('');
-  fetch(GAS_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({playTime,resultHex:hex}) });
-  location.href = `result.html?result=${hex}`;
+  fetch(GAS_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({datetime,playTime,resultHex:hex}) });
+	.finally(() => {
+	  location.href = `result.html?result=${hex}`;
+	});
 }
 
 /** 結果画面レンダー */
