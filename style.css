@@ -1,0 +1,11 @@
+body { font-family: sans-serif; max-width: 800px; margin: auto; padding: 1em; }
+h1 { text-align: center; }
+#sort-area { display: flex; justify-content: space-around; margin: 1em 0; }
+.char-card { text-align: center; cursor: pointer; }
+.char-card.selected1 { border: 3px solid #e74c3c; }
+.char-card.selected2 { border: 3px solid #3498db; }
+#controls { text-align: center; margin-top: 1em; }
+#controls button { margin: 0 .5em; }
+#result-list { list-style: none; padding: 0; }
+#result-list li { display: flex; align-items: center; margin: .5em 0; }
+#result-list img { width: 48px; height: 48px; margin-left: auto; }
