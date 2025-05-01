@@ -157,6 +157,7 @@ async function finish() {
         });
     } catch (e) {
         console.error('Failure to send data', e);
+        alert(e);
         // 今後必要に応じて処理を追加
     } finally {
         location.href = `result.html?result=${hex}`;
