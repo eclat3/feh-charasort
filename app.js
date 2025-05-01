@@ -1,4 +1,4 @@
-import { GAS_URL } from './firebase-config.js'; // GAS のエンドポイント
+import { GAS_URL } from './firebase-config.js';
 
 let chars = [];
 let testedSets = new Set();
@@ -13,9 +13,18 @@ function init() {
 }
 
 function nextRound() {
+  // プールの算出
   const pool = chars.filter(c => !rankings.includes(c.id));
-  const mod = pool.length % 3;
-  const size = (mod === 2 || pool.length <= 2) ? 2 : 3;
+  // グループサイズ決定
+  let size;
+  if (pool.length <= 2) {
+    size = pool.length;
+  } else if (pool.length % 3 === 1) {
+    size = 2;
+  } else {
+    size = 3;
+  }
+  // 組み合わせ重複防止ループ
   let group;
   do {
     group = shuffle(pool).slice(0, size);
@@ -26,6 +35,7 @@ function nextRound() {
 }
 
 function renderGroup() {
+  clearSelection();
   const area = document.getElementById('sort-area');
   area.innerHTML = '';
   currentGroup.forEach(c => {
@@ -45,21 +55,37 @@ function renderGroup() {
 }
 
 function selectRank(el) {
-  const sel = document.querySelectorAll('.char-card.selected1, .char-card.selected2');
-  if (!el.classList.contains('selected1')) {
-    if (sel.length === 0) el.classList.add('selected1');
-    else if (sel.length === 1) el.classList.add('selected2');
+  const first = document.querySelector('.char-card.selected1');
+  const second = document.querySelector('.char-card.selected2');
+  if (!el.classList.contains('selected1') && !el.classList.contains('selected2')) {
+    // 未選択状態
+    if (!first) {
+      el.classList.add('selected1');
+    } else if (!second && currentGroup.length === 3) {
+      el.classList.add('selected2');
+    }
   } else {
-    el.classList.remove('selected1', 'selected2');
+    // 既に選択済: クリックで解除
+    if (el.classList.contains('selected2')) {
+      el.classList.remove('selected2');
+    } else if (el.classList.contains('selected1')) {
+      // 1位解除時は2位を1位に繰り上げず、そのままクリア
+      el.classList.remove('selected1');
+    }
   }
 }
 
+function clearSelection() {
+  document.querySelectorAll('.char-card.selected1, .char-card.selected2')
+    .forEach(el => el.classList.remove('selected1', 'selected2'));
+}
+
 function submitRank() {
-  const s1 = document.querySelector('.selected1');
+  const s1 = document.querySelector('.char-card.selected1');
   if (!s1) return alert('まず1位を選択してください');
   rankings.push(+s1.dataset.id);
   if (currentGroup.length === 3) {
-    const s2 = document.querySelector('.selected2');
+    const s2 = document.querySelector('.char-card.selected2');
     if (!s2) return alert('2位を選択してください');
     rankings.push(+s2.dataset.id);
   }
@@ -70,26 +96,30 @@ function showResult() {
   const endTime = Date.now();
   const playTime = Math.floor((endTime - startTime) / 1000);
   const hex = rankings.map(id => chars.find(c => c.id === id).hex).join('');
-  // GAS に結果を送信
   fetch(GAS_URL, {
     method: 'POST',
-    contentType: 'application/json',
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ playTime, resultHex: hex })
   });
   location.href = `result.html?result=${hex}`;
 }
 
-document.getElementById('submit-rank').onclick = submitRank;
-document.getElementById('reset-rank').onclick = nextRound;
-document.getElementById('retire').onclick = () => {
-  if (confirm('途中終了しますか？')) showResult();
+// イベント設定
+window.onload = () => {
+  if (location.pathname.endsWith('result.html')) {
+    init();
+    renderResult();
+  } else {
+    init();
+    document.getElementById('submit-rank').onclick = submitRank;
+    document.getElementById('reset-rank').onclick = clearSelection;
+    document.getElementById('retire').onclick = () => {
+      if (confirm('途中終了しますか？')) showResult();
+    };
+  }
+  document.getElementById('restart')?.addEventListener('click', () => location.href = 'index.html');
+  document.getElementById('share')?.addEventListener('click', () => prompt('この URL を共有', location.href));
 };
-
-document.getElementById('restart')?.addEventListener('click', () => location.href = 'index.html');
-document.getElementById('share')?.addEventListener('click', () => prompt('この URL を共有', location.href));
-
-if (location.pathname.endsWith('result.html')) window.onload = renderResult;
-else window.onload = init;
 
 function renderResult() {
   const params = new URLSearchParams(location.search);
@@ -107,11 +137,11 @@ function renderResult() {
     if (i < 10) {
       const img = document.createElement('img');
       img.src = c.img;
-      ul.append(li);
       li.append(img);
-    } else ul.append(li);
+    }
+    ul.append(li);
   });
 }
 
-function shuffle(a) { return a.sort(() => Math.random() - .5); }
+function shuffle(arr) { return arr.sort(() => Math.random() - 0.5); }
 function key(group) { return group.map(c => c.id).sort().join('-'); }
