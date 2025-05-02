@@ -8,12 +8,18 @@
 </head>
 <body>
   <h1>キャラソート</h1>
-  <p>好きなキャラを３人ずつ比較して順位づけしよう</p>
+  <p>
+  	ファイアーエムブレムヒーローズが初出の英雄のキャラソートです
+  	<br>
+  	表示されているのが3人のときは 1位 → 2位 の順に選択し、[決定] を押してください
+  	<br>
+  	表示されているのが2人のときは 1位 のみを選択し、[決定] を押してください
+　</p>
   <div id="sort-area"></div>
   <div id="controls">
-    <button id="reset-rank">選択を解除する</button>
-    <button id="submit-rank">順位を確定する</button>
-    <button id="retire">途中終了する</button>
+    <button id="reset-rank">選択解除</button>
+    <button id="submit-rank">決定</button>
+    <button id="retire">途中終了</button>
   </div>
   <script type="module" src="firebase-config.js"></script>
   <script type="module" src="app.js"></script>
