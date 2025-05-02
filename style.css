@@ -1,11 +1,187 @@
-body { font-family: sans-serif; max-width: 800px; margin: auto; padding: 1em; }
-h1 { text-align: center; }
-#sort-area { display: flex; justify-content: space-around; margin: 1em 0; }
-.char-card { text-align: center; cursor: pointer; }
-.char-card.selected1 { border: 3px solid #e74c3c; }
-.char-card.selected2 { border: 3px solid #3498db; }
-#controls { text-align: center; margin-top: 1em; }
-#controls button { margin: 0 .5em; }
-#result-list { list-style: none; padding: 0; }
-#result-list li { display: flex; align-items: center; margin: .5em 0; }
-#result-list img { width: 48px; height: 48px; margin-left: auto; }
+/*----------------------------------
+  全体リセット＆ベースフォント
+----------------------------------*/
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+  html, body {
+    height: 100%;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    background: #f5f5f5;
+    color: #333;
+  }
+  main {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 1rem;
+  }
+  
+  /*----------------------------------
+    タイトル & 説明文
+  ----------------------------------*/
+  header {
+    text-align: center;
+    margin-bottom: 1.5rem;
+  }
+  header h1 {
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+  }
+  header p {
+    font-size: 1rem;
+    color: #666;
+  }
+  
+  /*----------------------------------
+    キャラカードエリア
+  ----------------------------------*/
+  #sort-area {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .char-card {
+    width: 160px;
+    cursor: pointer;
+    background: #fff;
+    border: 2px solid transparent;
+    border-radius: 8px;
+    overflow: hidden;
+    transition: transform .2s, border-color .2s, box-shadow .2s;
+  }
+  .char-card img {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+  }
+  .char-card p {
+    padding: 0.5rem;
+    text-align: center;
+    font-size: 0.9rem;
+  }
+  
+  /* ホバー時の演出 */
+  .char-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  }
+  
+  /* 選択中の見た目 */
+  .char-card.selected1 {
+    border-color: #007bff;
+    box-shadow: 0 0 0 3px rgba(0,123,255,0.3);
+  }
+  .char-card.selected2 {
+    border-color: #28a745;
+    box-shadow: 0 0 0 3px rgba(40,167,69,0.3);
+  }
+  
+  /* 画像フォールバック用 */
+  .char-card.placeholder {
+    background: #ddd;
+  }
+  
+  /*----------------------------------
+    ボタン群
+  ----------------------------------*/
+  .buttons {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.75rem;
+    margin-bottom: 2rem;
+  }
+  .buttons button {
+    min-width: 120px;
+    padding: 0.6rem 1rem;
+    font-size: 0.95rem;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background .2s;
+  }
+  .buttons button:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+  
+  /* 決定ボタン */
+  #submit-rank {
+    background: #007bff;
+    color: #fff;
+  }
+  #submit-rank:hover:not(:disabled) {
+    background: #0069d9;
+  }
+  
+  /* リセットボタン */
+  #reset-rank {
+    background: #ffc107;
+    color: #fff;
+  }
+  #reset-rank:hover {
+    background: #e0a800;
+  }
+  
+  /* 途中終了ボタン */
+  #retire {
+    background: #dc3545;
+    color: #fff;
+  }
+  #retire:hover {
+    background: #c82333;
+  }
+  
+  /* 再スタートボタン */
+  #restart {
+    background: #17a2b8;
+    color: #fff;
+  }
+  #restart:hover {
+    background: #138496;
+  }
+  
+  /* 共有ボタン */
+  #share {
+    background: #28a745;
+    color: #fff;
+  }
+  #share:hover {
+    background: #218838;
+  }
+  
+  /*----------------------------------
+    結果画面 (result.html)
+  ----------------------------------*/
+  #result-list {
+    list-style: none;
+    padding-left: 0;
+  }
+  #result-list li {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.75rem;
+    font-size: 1rem;
+  }
+  #result-list li img {
+    width: 40px;
+    height: 40px;
+    margin-left: 0.5rem;
+    border-radius: 4px;
+  }
+  
+  /* レスポンシブ対応 */
+  @media (max-width: 600px) {
+    .char-card {
+      width: 45%;
+    }
+    .buttons button {
+      flex: 1 1 45%;
+    }
+  }
+  
