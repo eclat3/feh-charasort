@@ -39,7 +39,7 @@ function init() {
 function startSorting() {
     startTime = Date.now();
     round = 1;
-    // ラウンド1: 全キャラを pool に登録
+    // 全キャラを登録
     currentPool = chars.map(c => c.id);
     nextRound();
 }
@@ -55,11 +55,11 @@ function nextRound() {
       return nextRound();
     }
   
-    // それ以外はグループを順次作っていく
+    // グループ作成
     if (currentPool.length > 0) {
       nextGroup();
     } else {
-      // プールが尽きたら次ラウンドへ
+      // 次ラウンド移行
       currentPool = [...nextPool];
       nextPool = [];
       return nextRound();
@@ -114,11 +114,11 @@ function submitRank() {
     const s2 = document.querySelector('.selected2');
     
     if (!s1) {
-      alert('まず1位を選択');
+      alert('1位を選択してください');
       return;
     }
     if (currentGroup.length === 3 && !s2) {
-      alert('2位を選択');
+      alert('2位を選択してください');
       return;
     }
     
@@ -142,7 +142,7 @@ function recordLosses(losers, winnerId) {
     });
 }
 
-/** 特定キャラに負けた集合 */
+/** 特定キャラに負けた集合取得 */
 function getLosersOf(id) {
     const arr = [];
     losses.forEach((winnerId, loserId) => {
@@ -151,7 +151,7 @@ function getLosersOf(id) {
     return arr;
 }
 
-/** 完了処理: GAS送信→結果画面へ */
+/** 完了処理 */
 async function finish() {
     const playTime = Math.floor((Date.now() - startTime) / 1000);
     const hex = rankings
