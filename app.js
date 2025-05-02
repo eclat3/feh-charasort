@@ -39,11 +39,21 @@ function init() {
 function startSorting() {
     startTime = Date.now();
     round = 1;
-    // 全キャラを登録
-    currentPool = chars.map(c => c.id);
+    currentPool = chars.map(c => c.id); // 全キャラを登録
+    shuffle(currentPool); // 最初に一度だけシャッフル
     nextRound();
 }
 
+/** 表示順シャッフル */
+function shuffle(arr) {
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+}
+
+/** ラウンド移行 */
 function nextRound() {
     round++;
     if (rankings.length === chars.length) return finish();
@@ -64,8 +74,9 @@ function nextRound() {
       nextPool = [];
       return nextRound();
     }
-  }
+}
   
+/** グループ移行 */
 function nextGroup() {
     const poolSize = currentPool.length;
     if (poolSize === 0) return nextRound();
@@ -167,9 +178,7 @@ async function finish() {
             body: form
         });
     } catch (e) {
-        console.error('Failure to send data', e);
-        alert(e);
-        // 今後必要に応じて処理を追加
+        console.error(e);
     } finally {
         location.href = `result.html?result=${hex}`;
     }
