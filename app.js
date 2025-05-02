@@ -203,25 +203,51 @@ function renderResult() {
 
 // イベント
 window.addEventListener('DOMContentLoaded', () => {
-  init().then(() => {
-    if (location.pathname.endsWith('result.html')) {
-      renderResult();
-    } else {
-      startSorting();
-    }
-
-    // ボタン要素取得
-    const btnSubmit = document.getElementById('submit-rank');
-    const btnReset = document.getElementById('reset-rank');
-    const btnRetire = document.getElementById('retire');
-    const btnRestart = document.getElementById('restart');
-    const btnShare = document.getElementById('share');
-
-    // イベント登録
-    if (btnSubmit)  btnSubmit.onclick  = submitRank;
-    if (btnReset)   btnReset.onclick   = clearSelection;
-    if (btnRetire)  btnRetire.onclick  = () => { if (confirm('途中終了しますか？')) finish(); };
-    if (btnRestart) btnRestart.onclick = () => { location.href = 'index.html'; };
-    if (btnShare)   btnShare.onclick   = () => { prompt('共有用URL', location.href); };
+    init().then(() => {
+      if (location.pathname.endsWith('result.html')) {
+        renderResult();
+      } else {
+        startSorting();
+      }
+  
+      // ボタン要素取得
+      const btnSubmit  = document.getElementById('submit-rank');
+      const btnReset   = document.getElementById('reset-rank');
+      const btnRetire  = document.getElementById('retire');
+      const btnRestart = document.getElementById('restart');
+      const btnShare   = document.getElementById('share');
+  
+      // イベント登録
+      if (btnSubmit)  btnSubmit.onclick  = submitRank;
+      if (btnReset)   btnReset.onclick   = clearSelection;
+  
+      if (btnRetire) {
+        btnRetire.onclick = () => {
+          if (rankings.length === 0) {
+            alert('まだひとりも順位が確定していません。');
+            return;
+          }
+          const msg = `${rankings.length}位まで確定しています。途中終了しますか？`;
+          if (confirm(msg)) {
+            finish();
+          }
+        };
+      }
+  
+      if (btnRestart) {
+        btnRestart.onclick = () => { location.href = 'index.html'; };
+      }
+  
+      if (btnShare) {
+        btnShare.onclick = async () => {
+          try {
+            await navigator.clipboard.writeText(location.href);
+            alert('URLをクリップボードにコピーしました');
+          } catch (e) {
+            console.error(e);
+            alert('クリップボードへのコピーに失敗しました\nURLを手動でコピーしてください');
+          }
+        };
+      }
+    });
   });
-});
