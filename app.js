@@ -144,16 +144,17 @@ function getLosersOf(id) {
 
 /** 完了処理: GAS送信→結果画面へ */
 async function finish() {
-    const datetime = Date.now();
     const playTime = Math.floor((Date.now() - startTime) / 1000);
     const hex = rankings
         .map(id => charMap.get(id).hex)
         .join('');
+    const form = new URLSearchParams();
+    form.append('playTime', playTime);
+    form.append('resultHex', hex);
     try {
         await fetch(GAS_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({playTime, resultHex: hex })
+            method: 'POST',
+            body: form
         });
     } catch (e) {
         console.error('Failure to send data', e);
