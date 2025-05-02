@@ -15,6 +15,15 @@ let startTime;
 // 敗北情報: map<charId, Set<opponentId>>
 const losses = new Map();
 
+// ローカルセッションID
+let sessionId = localStorage.getItem('sessionId');
+if (!sessionId) {
+  sessionId = Array.from(crypto.getRandomValues(new Uint8Array(16)))
+                   .map(b=>b.toString(16).padStart(2,'0'))
+                   .join('');
+  localStorage.setItem('sessionId', sessionId);
+}
+
 /** 初期化: characters.json 読込 */
 function init() {
     return fetch('characters.json')
@@ -149,6 +158,7 @@ async function finish() {
         .map(id => charMap.get(id).hex)
         .join('');
     const form = new URLSearchParams();
+    form.append('sessionId', sessionId);
     form.append('playTime', playTime);
     form.append('resultHex', hex);
     try {
