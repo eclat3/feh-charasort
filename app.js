@@ -186,19 +186,36 @@ async function finish() {
 
 /** 結果画面レンダー */
 function renderResult() {
-    const hex = new URLSearchParams(location.search).get('result') || '';
-    const ul  = document.getElementById('result-list');
-    for (let i = 0; i < hex.length; i += 2) {
-        const code = hex.slice(i, i + 2);
-        const data = hexMap.get(code);
-        const li   = document.createElement('li');
-        li.textContent = `${ul.children.length+1}位 ${data.name}`;
-        if (ul.children.length<10) {
-            const img = document.createElement('img'); img.src=data.img;
-            li.append(img);
-        }
-        ul.append(li);
+  const hex = new URLSearchParams(location.search).get('result') || '';
+  const ul  = document.getElementById('result-list');
+
+  for (let i = 0; i < hex.length; i += 2) {
+    const code = hex.slice(i, i + 2);
+    const data = hexMap.get(code);
+    const li = document.createElement('li');
+
+    //順位テキスト
+    const rankSpan = document.createElement('span');
+    rankSpan.className = 'result-rank';
+    rankSpan.textContent = `${ul.children.length + 1}位`;
+    li.append(rankSpan);
+
+    // 10位以内なら画像追加
+    if (ul.children.length < 10) {
+      const img = document.createElement('img');
+      img.src = data.img;
+      img.alt = data.name;
+      li.append(img);
     }
+
+    //名前テキスト
+    const nameSpan = document.createElement('span');
+    nameSpan.className = 'result-name';
+    nameSpan.textContent = data.name;
+    li.append(nameSpan);
+
+    ul.append(li);
+  }
 }
 
 // イベント
