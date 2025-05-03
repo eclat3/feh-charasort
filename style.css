@@ -170,18 +170,25 @@
     gap: 0.75rem;
     margin-top: 1rem;
   }
+
   #result-list li {
     display: flex;
     align-items: center;
-    font-size: 1.1rem;
-    padding: 0.5rem 0;
   }
+  .result-rank {
+    width: 4ch;
+    text-align: right;
+    margin-right: 0.5rem;
+  }
+
   #result-list li img {
     width: 48px;
     height: 48px;
-    object-fit: cover;
-    margin-left: 0.75rem;
+    margin-right: 0.5rem;
     border-radius: 6px;
+  }
+  .result-name {
+  flex: 1;           /* 残り幅をすべて使う */
   }
   
 /* ボタンと結果リストの余白を詰める */
