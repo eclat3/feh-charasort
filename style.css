@@ -31,7 +31,6 @@
     letter-spacing: 0.05em;
     text-align: center;
     background: linear-gradient(90deg, #007bff, #28a745);
-    -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     text-shadow: 0 2px 4px rgba(0,0,0,0.1);
     margin-bottom: 0.2rem;
