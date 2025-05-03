@@ -60,5 +60,6 @@
   { "id": 58, "hex": "3A", "name": "ルーン", "img": "img/58.png" },
   { "id": 59, "hex": "3B", "name": "バルドル", "img": "img/59.png" },
   { "id": 60, "hex": "3C", "name": "ヘズ", "img": "img/60.png" },
-  { "id": 61, "hex": "3D", "name": "ヴァーリ", "img": "img/61.png" }
+  { "id": 61, "hex": "3D", "name": "ヴァーリ", "img": "img/61.png" },
+  { "id": 62, "hex": "3E", "name": "ニョルズ", "img": "img/62.png" }
 ]
