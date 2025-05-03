@@ -73,8 +73,8 @@
   
   /* 選択中の見た目 */
   .char-card.selected1 {
-    border: 5px solid #dc3545;
-    box-shadow: 0 0 0 5px rgba(220,43,69,0.3);
+    border: 4px solid #dc3545;
+    box-shadow: 0 0 0 4px rgba(220,43,69,0.3);
   }
   .char-card.selected2 {
     border: 4px solid #007bff;
@@ -119,10 +119,10 @@
     background: #0069d9;
   }
   
-  /* リセットボタン */
+  /* 選択解除ボタン */
   #reset-rank {
-    background: #ffc107;
-    color: #fff;
+    background: #d0d0d0;
+    color: #000;
   }
   #reset-rank:hover {
     background: #e0a800;
