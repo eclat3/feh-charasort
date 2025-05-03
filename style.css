@@ -34,7 +34,7 @@
     margin-bottom: 0.8rem;
     display: inline-block;
     padding-bottom: 0.5rem;
-    border-bottom: 3px solid #12083d;
+    border-bottom: 3px solid rgba(18,8,60,0.4);
   }
   header p {
     font-size: 1rem;
