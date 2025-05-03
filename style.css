@@ -26,13 +26,22 @@
     margin-bottom: 1.5rem;
   }
   header h1 {
-    font-size: 2rem;
-    font-weight: bold;
-    margin-bottom: 0.5rem;
+    font-size: 3rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-align: center;
+    background: linear-gradient(90deg, #007bff, #28a745);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    margin-bottom: 0.2rem;
   }
   header p {
-    font-size: 1rem;
-    color: #666;
+    font-size: 1.1rem;
+    color: #555;
+    text-align: center;
+    margin-bottom: 2rem;
+    opacity: 0.85;
   }
   
   /*----------------------------------
