@@ -26,15 +26,15 @@
     margin-bottom: 1.5rem;
   }
   header h1 {
-    font-size: 2.4rem;
+    font-size: 2.2rem;
     font-weight: 600;
     letter-spacing: 0.03em;
     color: #333;
     text-align: center;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.8rem;
     display: inline-block;
-    padding-bottom: 0.3rem;
-    border-bottom: 3px solid #007bff;
+    padding-bottom: 0.5rem;
+    border-bottom: 3px solid #12083d;
   }
   header p {
     font-size: 1rem;
