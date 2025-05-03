@@ -191,6 +191,47 @@
   flex: 1;           /* 残り幅すべて */
   }
   
+/* 折りたたみ「遊び方」 */
+.howto {
+    margin: 1.5rem auto;
+    max-width: 600px;
+    font-size: 0.95rem;
+  }
+  .howto > summary {
+    cursor: pointer;
+    padding: 0.5rem 1rem;
+    background: #e9ecef;
+    border-radius: 6px;
+    font-weight: bold;
+  }
+  .howto-content {
+    padding: 1rem;
+    background: #f8f9fa;
+    border-left: 3px solid #007bff;
+    margin-top: 0.5rem;
+    border-radius: 0 6px 6px 6px;
+  }
+  .howto-content p,
+  .howto-content ol {
+    margin-bottom: 0.75rem;
+  }
+  .howto-content ol {
+    padding-left: 1.2rem;
+  }
+  
+  /* サイトフッター */
+  .site-footer {
+    text-align: center;
+    font-size: 0.8rem;
+    color: #666;
+    padding: 1.5rem 0;
+    border-top: 1px solid #ddd;
+    margin-top: 2rem;
+  }
+  .site-footer p {
+    line-height: 1.4;
+  }
+
 /* ボタンと結果リストの余白を詰める */
 .buttons {
     margin-bottom: 1rem;
