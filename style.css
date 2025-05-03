@@ -218,6 +218,14 @@
   .howto-content ol {
     padding-left: 1.2rem;
   }
+  .howto-content .howto-rank1 {
+    color: #dc3545;
+    font-weight: bold;
+  }
+  .howto-content .howto-rank2 {
+    color: #007bff;
+    font-weight: bold;
+  }
   
   /* サイトフッター */
   .site-footer {
