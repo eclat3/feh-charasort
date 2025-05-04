@@ -106,7 +106,7 @@ function renderGroup(group) {
 function selectRank(el, size) {
     const s1 = document.querySelector('.selected1');
     const s2 = document.querySelector('.selected2');
-    if (!s1) return el.classList.add('selected1');
+    if (!s1 && el !== s2) return el.classList.add('selected1');
     if (size === 3 && !s2 && el !== s1) return el.classList.add('selected2');
     // クリックで解除
     if (el.classList.contains('selected2')) el.classList.remove('selected2');
